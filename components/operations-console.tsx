@@ -199,7 +199,6 @@ export function OperationsConsole() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    setClock(formatClock(new Date()));
     const clockTimer = window.setInterval(() => setClock(formatClock(new Date())), 1000);
     return () => window.clearInterval(clockTimer);
   }, []);
@@ -315,7 +314,7 @@ export function OperationsConsole() {
     addAuditEntry("Exported incident report", selectedIncident.id, "recorded");
   }
 
-  function SidebarNav({ items }: { items: NavItem[] }) {
+  function renderSidebarNav(items: NavItem[]) {
     return (
       <nav>
         {items.map((item) => (
@@ -334,7 +333,7 @@ export function OperationsConsole() {
     );
   }
 
-  function NodeInspector({ node }: { node: NetworkNode }) {
+  function renderNodeInspector(node: NetworkNode) {
     const gauges = [
       { label: "CPU load", value: node.cpu, unit: "%" },
       { label: "Packet loss", value: node.packetLoss * 10, unit: `${node.packetLoss}%` },
@@ -380,7 +379,7 @@ export function OperationsConsole() {
     );
   }
 
-  function OverviewView() {
+  function renderOverviewView() {
     return (
       <>
         <section className="stats-grid">
@@ -514,7 +513,7 @@ export function OperationsConsole() {
     );
   }
 
-  function TopologyView() {
+  function renderTopologyView() {
     return (
       <section className="split-view">
         <article className="panel topology-page-card">
@@ -536,12 +535,12 @@ export function OperationsConsole() {
             selectedNodeId={selectedNodeId}
           />
         </article>
-        <NodeInspector node={selectedNode} />
+        {renderNodeInspector(selectedNode)}
       </section>
     );
   }
 
-  function IncidentsView() {
+  function renderIncidentsView() {
     return (
       <section className="incident-command-grid">
         <article className="panel incident-index">
@@ -646,7 +645,7 @@ export function OperationsConsole() {
     );
   }
 
-  function IntelligenceView() {
+  function renderIntelligenceView() {
     return (
       <section className="intel-grid">
         <article className="panel forecast-chart-card">
@@ -718,7 +717,7 @@ export function OperationsConsole() {
     );
   }
 
-  function AuditView() {
+  function renderAuditView() {
     return (
       <article className="panel audit-page-card">
         <header className="panel-heading">
@@ -750,7 +749,7 @@ export function OperationsConsole() {
     );
   }
 
-  function SettingsView() {
+  function renderSettingsView() {
     const settings = [
       {
         icon: "wifi-off" as IconName,
@@ -828,14 +827,14 @@ export function OperationsConsole() {
     );
   }
 
-  function CurrentView() {
+  function renderCurrentView() {
     switch (view) {
       case "topology":
-        return <TopologyView />;
+        return renderTopologyView();
       case "incidents":
-        return <IncidentsView />;
+        return renderIncidentsView();
       case "intelligence":
-        return <IntelligenceView />;
+        return renderIntelligenceView();
       case "copilot":
         return (
           <div className="copilot-page">
@@ -863,11 +862,11 @@ export function OperationsConsole() {
           </div>
         );
       case "audit":
-        return <AuditView />;
+        return renderAuditView();
       case "settings":
-        return <SettingsView />;
+        return renderSettingsView();
       default:
-        return <OverviewView />;
+        return renderOverviewView();
     }
   }
 
@@ -894,12 +893,12 @@ export function OperationsConsole() {
 
         <div className="sidebar-section">
           <span className="nav-label">COMMAND</span>
-          <SidebarNav items={primaryNav} />
+          {renderSidebarNav(primaryNav)}
         </div>
 
         <div className="sidebar-section sidebar-section-bottom">
           <span className="nav-label">SYSTEM</span>
-          <SidebarNav items={secondaryNav} />
+          {renderSidebarNav(secondaryNav)}
         </div>
 
         <div className="airgap-card">
@@ -986,7 +985,7 @@ export function OperationsConsole() {
             </div>
           </header>
 
-          <CurrentView />
+          {renderCurrentView()}
         </div>
       </main>
 
